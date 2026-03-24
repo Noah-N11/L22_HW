@@ -9,3 +9,5 @@ dependencies = [
     "plotly>=6.6.0"
 ]
 
+[tool.poetry]
+package-mode = false
