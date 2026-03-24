@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 import requests
+import plotly.express as px
 
 # Header
 st.title("Crypto Dashboard (CoinGecko)")
@@ -36,7 +37,22 @@ if df is not None:
    # Time Series chart
    st.subheader(f"{coin.capitalize()} Price Over Time")
    df = df.set_index("timestamp")
-   st.lie_chart(df["price"])
+
+   fig = px.line(
+      df, 
+      x = df.index,
+      y = "price",
+      title = f"{coin.capitalize()} Price Over last {days} Days"
+   )
+
+   fig.update_layout(
+      xaxis_title = "Date",
+      yaxis_title = "Price (USD)",
+      hovermode = "x unified"
+   )
+
+   fig.update_yaxes(tickprefix = "$")
+   st.plotly_chart(fig)
 
    current_price = df["price"].iloc[-1]
    old_price = df["price"].iloc[0]
@@ -73,9 +89,25 @@ def fetch_top_coins():
 top_df = fetch_top_coins()
 
 if top_df is not None:
+   top_df["market_cap_billions"] = top_df["market_cap"] / 1e9
+
    # Chart
    st.subheader("Top 10 Coins by Market Cap")
-   st.bar_chart(top_df.set_index("name"))
+   fig_bar = px.bar(
+      top_df,
+      x = "name",
+      y = "market_cap_billions",
+      title = "Top 10 Cryptocurrencies by Market Cap"
+   )
+
+   fig_bar.update_layout(
+      xaxis_title = "Cryptocurrency",
+      yaxis_title = "Market Cap (Billions USD)"
+   )
+
+   fig_bar.update_yaxes(tickprefix = "$")
+
+   st.plotly_chart(fig_bar)
 
    # Table
    st.subheader("Market Data Table")
