@@ -1,0 +1,4 @@
+[project]
+name = "crypto-dashboard"
+version = "0.1.0"
+dependencies = ["streamlit", "pandas", "requests"]
